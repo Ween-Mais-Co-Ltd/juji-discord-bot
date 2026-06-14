@@ -15,12 +15,10 @@ export default {
     }
 
     const { cooldowns } = interaction.client
-    if (!cooldowns.has(command.data.name)) {
-      cooldowns.set(command.data.name, new Collection())
-    }
+    const timestamps = cooldowns.get(command.data.name) ?? new Collection<string, number>()
+    cooldowns.set(command.data.name, timestamps)
 
     const now = Date.now()
-    const timestamps = cooldowns.get(command.data.name)!
     const cooldownMs = (command.cooldown ?? DEFAULT_COOLDOWN) * 1_000
 
     const userTimestamp = timestamps.get(interaction.user.id)
