@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.0.1...v1.1.0) (2026-06-16)
+
+
+### Features
+
+* add music cache file retention ([82c5ebd](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/commit/82c5ebde94c8f65088c52713c3aab32bd06a0edf))
+
 ## [1.0.1](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.0.0...v1.0.1) (2026-06-16)
 
 
