@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process'
 import { existsSync } from 'node:fs'
-import { mkdir } from 'node:fs/promises'
+import { copyFile, mkdir } from 'node:fs/promises'
 import { join } from 'node:path'
 import ffmpegStatic from 'ffmpeg-static'
 import { cacheDir, cookiesFile } from '../config'
@@ -33,6 +33,8 @@ function isYtDlpDump(value: unknown): value is YtDlpDump {
 }
 
 export class YtDlpService {
+  private cookiesReady: Promise<string> | null = null
+
   constructor(
     private readonly cacheDir: string,
     private readonly cookiesFile: string,
@@ -47,7 +49,7 @@ export class YtDlpService {
       'ytsearch1',
       '--js-runtime',
       'node',
-      ...this.cookieArgs(),
+      ...(await this.cookieArgs()),
       input,
     ])
 
@@ -88,7 +90,7 @@ export class YtDlpService {
       '--js-runtime',
       'node',
       ...this.ffmpegArgs(),
-      ...this.cookieArgs(),
+      ...(await this.cookieArgs()),
       '-o',
       join(this.cacheDir, '%(id)s.%(ext)s'),
       track.url,
@@ -100,11 +102,26 @@ export class YtDlpService {
     return outputPath
   }
 
-  private cookieArgs(): string[] {
+  private async cookieArgs(): Promise<string[]> {
     if (existsSync(this.cookiesFile)) {
-      return ['--cookies', this.cookiesFile]
+      return ['--cookies', await this.prepareCookies()]
     }
     return ['--cookies-from-browser', 'chrome']
+  }
+
+  // yt-dlp rewrites the cookie jar back to the --cookies file when it finishes.
+  // The configured file may live on a read-only mount (prod secrets), so copy it
+  // once into the writable cache dir and let yt-dlp persist refreshed cookies there.
+  private prepareCookies(): Promise<string> {
+    if (this.cookiesReady === null) {
+      this.cookiesReady = (async () => {
+        await mkdir(this.cacheDir, { recursive: true })
+        const writableCookies = join(this.cacheDir, 'cookies.txt')
+        await copyFile(this.cookiesFile, writableCookies)
+        return writableCookies
+      })()
+    }
+    return this.cookiesReady
   }
 
   private ffmpegArgs(): string[] {
