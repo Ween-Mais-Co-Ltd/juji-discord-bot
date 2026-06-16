@@ -15,6 +15,15 @@ There is no test setup. Lint config uses typescript-eslint `strict` + `stylistic
 
 Required env vars (read via `requireEnv`, which throws if missing): `DISCORD_TOKEN`, `DISCORD_CLIENT_ID`.
 
+## Releases & Versioning
+
+Versioning is fully automated by **semantic-release** (config in [.releaserc.json](.releaserc.json)) and driven by [Conventional Commits](https://www.conventionalcommits.org/) — there is no manual version bumping. The `version` field in `package.json` is a placeholder (`0.0.0-semantically-released`); the real version lives in git tags and is the single source of truth synced everywhere.
+
+- Commit messages decide the bump: `fix:` → patch, `feat:` → minor, `feat!:` / `BREAKING CHANGE:` → major. `chore:`/`docs:`/`refactor:` etc. trigger no release.
+- On every push to `main`, the `release` job in [.github/workflows/deploy.yml](.github/workflows/deploy.yml) computes the next version, then: updates `package.json` + `CHANGELOG.md`, commits them back as `chore(release): X.Y.Z [skip ci]`, creates the `vX.Y.Z` git tag, and publishes a GitHub Release.
+- Only when a release is actually published do the `build-and-push` and `deploy` jobs run. The GHCR image is tagged with the exact version plus rolling `X.Y`, `X`, and `latest` (e.g. `1.4.2`, `1.4`, `1`, `latest`). The server is deployed to the pinned `X.Y.Z` tag.
+- Net effect: merges that contain only non-release commits build/deploy nothing; a release tag, a GHCR image, and a server deploy all share one synchronized version.
+
 ## Architecture
 
 A Discord bot built on discord.js v14 with a convention-based loader.
