@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.2.1...v1.3.0) (2026-06-18)
+
+
+### Features
+
+* stream tracks over 10 min instead of caching to disk ([ea8325a](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/commit/ea8325a3dc86d2a983c47de8402d831fe8577798))
+
 ## [1.2.1](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.2.0...v1.2.1) (2026-06-17)
 
 
