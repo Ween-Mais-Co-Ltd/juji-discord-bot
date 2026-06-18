@@ -11,7 +11,7 @@ A Discord bot built with [discord.js](https://discord.js.org) v14, running on th
 | `/play <query>` | Play a song from a YouTube URL or search term in your voice channel.       |
 | `/stop`         | Stop playback and clear the queue.                                         |
 
-The music player joins the voice channel you're in, downloads audio with [yt-dlp](https://github.com/yt-dlp/yt-dlp), and queues tracks per server — `/play` while something is already playing adds to the queue instead of interrupting it.
+The music player joins the voice channel you're in, fetches audio with [yt-dlp](https://github.com/yt-dlp/yt-dlp), and queues tracks per server — `/play` while something is already playing adds to the queue instead of interrupting it. Tracks **longer than 10 minutes are streamed directly** into the voice channel (nothing is written to disk, and playback starts as soon as audio arrives); shorter ones are downloaded to the cache and reused on replay. **Live streams aren't supported** and are politely declined.
 
 ## Chat
 
@@ -48,8 +48,9 @@ The music player joins the voice channel you're in, downloads audio with [yt-dlp
    DISCORD_CLIENT_ID=your-application-client-id
 
    # Optional (music player):
-   # MUSIC_CACHE_DIR=./music_cache       # where downloaded audio is cached (default: ./music_cache)
-   # YTDLP_COOKIES_FILE=./cookies.txt     # cookies for age-restricted/region-locked videos
+   # MUSIC_CACHE_DIR=./music_cache          # where downloaded audio is cached (default: ./music_cache)
+   # MUSIC_STREAM_THRESHOLD_SEC=600         # tracks longer than this stream directly instead of caching (default: 600 = 10 min)
+   # YTDLP_COOKIES_FILE=./cookies.txt       # cookies for age-restricted/region-locked videos
 
    # Optional (chat assistant / Ollama):
    # OLLAMA_HOST=http://localhost:11434   # Ollama base URL (default: http://ollama:11434, the compose service)
