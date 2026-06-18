@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.3.0...v1.3.1) (2026-06-18)
+
+
+### Bug Fixes
+
+* blank env defaults value ([f3b7f66](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/commit/f3b7f66d4cf054b4bec48007200be21b911df279))
+
 # [1.3.0](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.2.1...v1.3.0) (2026-06-18)
 
 
