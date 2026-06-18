@@ -150,6 +150,7 @@ jobs:
           OLLAMA_NUM_CTX=${{ secrets.OLLAMA_NUM_CTX }}
           LLM_ENABLED=${{ secrets.LLM_ENABLED }}
           MUSIC_CACHE_DIR=${{ secrets.MUSIC_CACHE_DIR }}
+          MUSIC_STREAM_THRESHOLD_SEC=${{ secrets.MUSIC_STREAM_THRESHOLD_SEC }}
           MUSIC_CACHE_RETENTION_DAYS=${{ secrets.MUSIC_CACHE_RETENTION_DAYS }}
           MUSIC_CACHE_SWEEP_HOURS=${{ secrets.MUSIC_CACHE_SWEEP_HOURS }}
           EOF
