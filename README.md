@@ -9,13 +9,14 @@ A Discord bot built with [discord.js](https://discord.js.org) v14, running on th
 | `/ping`         | Check the bot's latency to Discord.                                        |
 | `/help`         | List all available commands.                                               |
 | `/play <query>` | Play a song from a YouTube URL or search term in your voice channel.       |
+| `/skip`         | Skip the current song and play the next in the queue.                       |
 | `/stop`         | Stop playback and clear the queue.                                         |
 
 The music player joins the voice channel you're in, fetches audio with [yt-dlp](https://github.com/yt-dlp/yt-dlp), and queues tracks per server — `/play` while something is already playing adds to the queue instead of interrupting it. Tracks **longer than 10 minutes are streamed directly** into the voice channel (nothing is written to disk, and playback starts as soon as audio arrives); shorter ones are downloaded to the cache and reused on replay. **Live streams aren't supported** and are politely declined.
 
 ## Chat
 
-`@mention` the bot in a text channel and it replies using a local LLM via [Ollama](https://ollama.com). It can also control music from natural language — e.g. "@Juji play lofi beats" or "@Juji stop the music". Notes:
+`@mention` the bot in a text channel and it replies using a local LLM via [Ollama](https://ollama.com). It can also control music from natural language — e.g. "@Juji play lofi beats", "@Juji skip", or "@Juji stop the music". Notes:
 
 - It responds **only** to messages that mention it (replies are ignored for now), and ignores other bots.
 - **No memory** — each message is a standalone prompt.
