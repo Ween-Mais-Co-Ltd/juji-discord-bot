@@ -60,7 +60,7 @@ Under Docker Compose it's **internal to the Compose network** (not published to 
    ```sh
    DISCORD_TOKEN=your-bot-token
    DISCORD_CLIENT_ID=your-application-client-id
-   SUPABASE_JWT_SECRET=your-supabase-jwt-secret
+   SUPABASE_URL=https://your-project-ref.supabase.co
 
    # Optional (HTTP API):
    # API_PORT=3000                          # port the Hono server listens on (default: 3000)
@@ -81,7 +81,7 @@ Under Docker Compose it's **internal to the Compose network** (not published to 
    # LLM_ENABLED=false                    # disable chat entirely (default: true)
    ```
 
-   `DISCORD_TOKEN`, `DISCORD_CLIENT_ID`, and `SUPABASE_JWT_SECRET` are required and validated at startup. The `LAVALINK_*` vars are optional and default to the bundled Compose `lavalink` service.
+   `DISCORD_TOKEN`, `DISCORD_CLIENT_ID`, and `SUPABASE_URL` are required and validated at startup. The `LAVALINK_*` vars are optional and default to the bundled Compose `lavalink` service.
 
 3. Register the slash commands with Discord:
 
@@ -122,7 +122,7 @@ The repo ships a multi-stage [Dockerfile](Dockerfile) (based on Bun's official i
    ```sh
    DISCORD_TOKEN=your-bot-token
    DISCORD_CLIENT_ID=your-application-client-id
-   SUPABASE_JWT_SECRET=your-supabase-jwt-secret
+   SUPABASE_URL=https://your-project-ref.supabase.co
    LAVALINK_PASSWORD=youshallnotpass        # shared by the bot and the lavalink service
    ```
 

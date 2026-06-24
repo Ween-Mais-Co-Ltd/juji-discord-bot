@@ -1,3 +1,3 @@
 import { requireEnv } from '.'
 
-export const supabaseJwtSecret = requireEnv('SUPABASE_JWT_SECRET')
+export const supabaseUrl = requireEnv('SUPABASE_URL')

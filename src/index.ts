@@ -3,5 +3,5 @@ import { startBot } from './bot'
 import { ollamaClient } from './llm/OllamaClient'
 
 ollamaClient.warmup()
-startApi()
+await startApi()
 await startBot()

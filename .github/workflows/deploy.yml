@@ -154,7 +154,7 @@ jobs:
           OLLAMA_NUM_CTX=${{ secrets.OLLAMA_NUM_CTX }}
           LLM_ENABLED=${{ secrets.LLM_ENABLED }}
           LAVALINK_PASSWORD=${{ secrets.LAVALINK_PASSWORD }}
-          SUPABASE_JWT_SECRET=${{ secrets.SUPABASE_JWT_SECRET }}
+          SUPABASE_URL=${{ secrets.SUPABASE_URL }}
           EOF
 
       - name: Deploy

@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
 import { apiPort, corsOrigins } from '../config'
-import { authMiddleware } from './middleware/auth'
+import { authMiddleware, initJwks } from './middleware/auth'
 import { guilds } from './routes/guilds'
 import { health } from './routes/health'
 import { me } from './routes/me'
@@ -17,7 +17,8 @@ const app = new Hono()
   .route('/api/me', me)
   .route('/api/guilds', guilds)
 
-export function startApi(): void {
+export async function startApi(): Promise<void> {
+  await initJwks()
   initMusicEvents()
   Bun.serve({ port: apiPort, fetch: app.fetch, websocket })
   console.log(`API listening on port ${apiPort}`)
