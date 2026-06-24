@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.7.0...v1.7.1) (2026-06-24)
+
+
+### Bug Fixes
+
+* **docker:** drop root-owned lavalink_plugins volume that blocked plugin download ([53b370e](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/commit/53b370e4248a7db51e760e5d35aa75d88b7d7728))
+
 # [1.7.0](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.6.0...v1.7.0) (2026-06-24)
 
 
