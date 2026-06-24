@@ -12,7 +12,7 @@ A Discord bot built with [discord.js](https://discord.js.org) v14, running on th
 | `/skip`         | Skip the current song and play the next in the queue.                       |
 | `/stop`         | Stop playback and clear the queue.                                         |
 
-The music player joins the voice channel you're in, fetches audio with [yt-dlp](https://github.com/yt-dlp/yt-dlp), and queues tracks per server — `/play` while something is already playing adds to the queue instead of interrupting it. Tracks **longer than 10 minutes are streamed directly** into the voice channel (nothing is written to disk, and playback starts as soon as audio arrives); shorter ones are downloaded to the cache and reused on replay. **Live streams aren't supported** and are politely declined.
+The music player joins the voice channel you're in and queues tracks per server — `/play` while something is already playing adds to the queue instead of interrupting it. Audio is resolved and streamed by a separate [Lavalink](https://lavalink.dev) node (YouTube via the [youtube-source](https://github.com/lavalink-devs/youtube-source) plugin); the bot just drives it over the network, so nothing is fetched or transcoded in-process. **Live streams aren't supported** and are politely declined.
 
 ## Chat
 
@@ -42,10 +42,8 @@ Under Docker Compose it's **internal to the Compose network** (not published to 
 
 - [Bun](https://bun.com) installed
 - A Discord application with a bot token ([Discord Developer Portal](https://discord.com/developers/applications))
-- For the music player (`/play`, `/stop`):
-  - [`yt-dlp`](https://github.com/yt-dlp/yt-dlp) on your `PATH` (e.g. `brew install yt-dlp`)
-  - [Node.js](https://nodejs.org) available — yt-dlp uses it to solve YouTube signatures (`--js-runtime node`)
-  - ffmpeg is bundled automatically via the `ffmpeg-static` dependency, so no separate install is needed
+- For the music player (`/play`, `/skip`, `/stop`):
+  - A reachable [Lavalink](https://lavalink.dev) v4 node. With Docker Compose this is the bundled `lavalink` service; for local dev, run `docker compose up -d lavalink` (or your own node) and point `LAVALINK_HOST`/`LAVALINK_PORT`/`LAVALINK_PASSWORD` at it. No `yt-dlp`/`ffmpeg` on the host anymore.
 - For the chat assistant (mention the bot):
   - An [Ollama](https://ollama.com) server reachable by the bot. With Docker Compose this is the bundled `ollama` service; for local dev, run Ollama yourself and set `OLLAMA_HOST` (or set `LLM_ENABLED=false` to turn chat off).
 
@@ -68,10 +66,11 @@ Under Docker Compose it's **internal to the Compose network** (not published to 
    # API_PORT=3000                          # port the Hono server listens on (default: 3000)
    # API_CORS_ORIGINS=*                     # comma-separated CORS allowlist, or * for any (default: *)
 
-   # Optional (music player):
-   # MUSIC_CACHE_DIR=./music_cache          # where downloaded audio is cached (default: ./music_cache)
-   # MUSIC_STREAM_THRESHOLD_SEC=600         # tracks longer than this stream directly instead of caching (default: 600 = 10 min)
-   # YTDLP_COOKIES_FILE=./cookies.txt       # cookies for age-restricted/region-locked videos
+   # Optional (music player / Lavalink):
+   # LAVALINK_HOST=lavalink                 # Lavalink host (default: lavalink, the compose service; use localhost for local dev)
+   # LAVALINK_PORT=2333                     # Lavalink port (default: 2333)
+   # LAVALINK_PASSWORD=youshallnotpass      # must match application.yml / LAVALINK_SERVER_PASSWORD (default: youshallnotpass)
+   # LAVALINK_SECURE=false                  # use wss/https to reach the node (default: false)
 
    # Optional (chat assistant / Ollama):
    # OLLAMA_HOST=http://localhost:11434   # Ollama base URL (default: http://ollama:11434, the compose service)
@@ -82,7 +81,7 @@ Under Docker Compose it's **internal to the Compose network** (not published to 
    # LLM_ENABLED=false                    # disable chat entirely (default: true)
    ```
 
-   `DISCORD_TOKEN`, `DISCORD_CLIENT_ID`, and `SUPABASE_JWT_SECRET` are required and validated at startup. If `YTDLP_COOKIES_FILE` is not present, yt-dlp falls back to reading cookies from your local Chrome profile.
+   `DISCORD_TOKEN`, `DISCORD_CLIENT_ID`, and `SUPABASE_JWT_SECRET` are required and validated at startup. The `LAVALINK_*` vars are optional and default to the bundled Compose `lavalink` service.
 
 3. Register the slash commands with Discord:
 
@@ -110,18 +109,24 @@ Under Docker Compose it's **internal to the Compose network** (not published to 
 
 ## Deployment (Docker)
 
-The repo ships a multi-stage [Dockerfile](Dockerfile) (based on Bun's official image) and a [docker-compose.yml](docker-compose.yml) for running on a Linux server. The image installs `yt-dlp`, `ffmpeg`, `nodejs`, and `python3` so the music player works out of the box.
+The repo ships a multi-stage [Dockerfile](Dockerfile) (based on Bun's official image) and a [docker-compose.yml](docker-compose.yml) for running on a Linux server. The bot image is slim — audio is handled by the separate `lavalink` service, so no `yt-dlp`/`ffmpeg` toolchain is baked in. All services attach to a shared **external** `juji-network` and resolve each other by name (so other stacks on that network — a reverse proxy, the future web panel — can reach them too).
 
-1. Create a `.env` file next to `docker-compose.yml` with your credentials:
+1. Create the shared network once (skip if it already exists):
+
+   ```sh
+   docker network create juji-network
+   ```
+
+2. Create a `.env` file next to `docker-compose.yml` with your credentials:
 
    ```sh
    DISCORD_TOKEN=your-bot-token
    DISCORD_CLIENT_ID=your-application-client-id
+   SUPABASE_JWT_SECRET=your-supabase-jwt-secret
+   LAVALINK_PASSWORD=youshallnotpass        # shared by the bot and the lavalink service
    ```
 
-2. (Optional) To play age-restricted/region-locked videos, drop a yt-dlp cookies file at `./secrets/cookies.txt`. The compose file mounts `./secrets` read-only and points `YTDLP_COOKIES_FILE` at it.
-
-3. Build and start the bot in the background:
+3. Build and start the stack in the background:
 
    ```sh
    docker compose up -d --build
@@ -137,7 +142,9 @@ The repo ships a multi-stage [Dockerfile](Dockerfile) (based on Bun's official i
 
 To stop: `docker compose down`.
 
-> The container runs `bun run deploy && bun run start` on startup, so slash commands are re-registered with Discord automatically on every launch. The service uses `restart: unless-stopped`, so it survives crashes and server reboots. Downloaded audio is cached in the `music_cache` named volume so it persists across restarts.
+> The container runs `bun run deploy && bun run start` on startup, so slash commands are re-registered with Discord automatically on every launch. The service uses `restart: unless-stopped`, so it survives crashes and server reboots.
+
+The Compose stack also runs a [Lavalink](https://lavalink.dev) v4 node for audio (the bot reaches it at `http://lavalink:2333` over `juji-network` — `LAVALINK_HOST` defaults to `lavalink`, so only `LAVALINK_PASSWORD` needs to match [application.yml](application.yml)). Its config is mounted from `./application.yml`; on first boot Lavalink downloads the `youtube-source` plugin into the `lavalink_plugins` volume (watch for `Lavalink is ready to accept connections`). Heap is capped at `-Xmx384m` since it shares the CPU host with Ollama — bump `_JAVA_OPTIONS` only if it OOMs. If YouTube starts returning "Sign in to confirm you're not a bot", enable the commented `plugins.youtube.oauth` block in `application.yml` with a refresh token.
 
 The HTTP API is **not published to the host** — it's reachable only on the Compose network, so a frontend/proxy added to the same stack calls it at `http://juji-discord-bot:${API_PORT:-3000}`. To hit it from the host for debugging, either add a `ports:` mapping to the service or `docker compose exec juji-discord-bot curl http://localhost:3000/health`.
 
@@ -155,7 +162,7 @@ src/
 ├── commands/             # Slash commands (one class file each)
 ├── events/               # Gateway event handlers (one class file each)
 ├── api/                  # HTTP adapter (Hono) — startApi + routes/ (one Hono sub-app per resource)
-├── music/                # Music domain — MusicManager, GuildPlayer, MusicService, yt-dlp service
+├── music/                # Music domain — MusicService, MusicManager, Lavalink client wiring
 ├── llm/                  # Chat domain — OllamaClient, SerialQueue, Assistant
 ├── config/               # Env var loading & validation
 └── types/                # Shared TypeScript types & Client augmentation
