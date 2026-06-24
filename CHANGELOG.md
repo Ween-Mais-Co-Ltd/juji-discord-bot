@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.8.0...v1.8.1) (2026-06-24)
+
+
+### Bug Fixes
+
+* **api:** switch JWT verification from HS256 to ES256 via Supabase JWKS ([8cec369](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/commit/8cec36918ed332dd79e1b777911f75c72ec692b4))
+
 # [1.8.0](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.7.1...v1.8.0) (2026-06-24)
 
 
