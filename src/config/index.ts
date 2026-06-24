@@ -23,7 +23,7 @@ export function boolEnv(key: string, fallback: boolean): boolean {
 }
 
 export * from './discord'
-export * from './music'
+export * from './lavalink'
 export * from './llm'
 export * from './api'
 export * from './auth'
