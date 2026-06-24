@@ -1,11 +1,9 @@
 node_modules
 Dockerfile*
 docker-compose*
+application.yml
 .git
 .env
 .gitignore
 *.md
 BotDiscord-jujibot-main
-music_cache
-secrets
-cookies.txt

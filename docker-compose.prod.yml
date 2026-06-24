@@ -4,14 +4,12 @@ services:
     restart: unless-stopped
     depends_on:
       - ollama
+      - lavalink
     env_file:
       - .env
-    environment:
-      - YTDLP_COOKIES_FILE=/usr/src/app/secrets/cookies.txt
     pull_policy: always
-    volumes:
-      - music_cache:/usr/src/app/music_cache
-      - ./secrets:/usr/src/app/secrets:ro
+    networks:
+      - juji-network
 
   ollama:
     image: ollama/ollama:latest
@@ -23,7 +21,27 @@ services:
       - OLLAMA_CONTEXT_LENGTH=4096
     volumes:
       - ollama_models:/root/.ollama
+    networks:
+      - juji-network
+
+  lavalink:
+    image: ghcr.io/lavalink-devs/lavalink:4-alpine
+    restart: unless-stopped
+    pull_policy: always
+    environment:
+      # Modest heap for the CPU-only host shared with Ollama (the docs' 6G is far too big here).
+      - _JAVA_OPTIONS=-Xmx512m
+      - LAVALINK_SERVER_PASSWORD=${LAVALINK_PASSWORD:-youshallnotpass}
+    volumes:
+      - ./application.yml:/opt/Lavalink/application.yml:ro
+      - lavalink_plugins:/opt/Lavalink/plugins
+    networks:
+      - juji-network
 
 volumes:
-  music_cache:
   ollama_models:
+  lavalink_plugins:
+
+networks:
+  juji-network:
+    external: true

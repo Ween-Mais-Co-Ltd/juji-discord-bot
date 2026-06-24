@@ -1,0 +1,37 @@
+server:
+  port: 2333
+  address: 0.0.0.0
+
+lavalink:
+  plugins:
+    - dependency: 'dev.lavalink.youtube:youtube-plugin:1.18.1'
+      snapshot: false
+  server:
+    password: '${LAVALINK_SERVER_PASSWORD:youshallnotpass}'
+    sources:
+      youtube: false
+      bandcamp: false
+      soundcloud: false
+      twitch: false
+      vimeo: false
+      nico: false
+      http: false
+      local: false
+
+plugins:
+  youtube:
+    enabled: true
+    allowSearch: true
+    allowDirectVideoIds: true
+    allowDirectPlaylistIds: true
+    clients:
+      - MUSIC
+      - WEB
+      - WEBEMBEDDED
+      - ANDROID_VR
+    # If YouTube starts returning "Sign in to confirm you're not a bot", generate a
+    # refresh token once (device login) and enable OAuth here — the modern replacement
+    # for the old yt-dlp cookies.txt:
+    # oauth:
+    #   enabled: true
+    #   refreshToken: '<generated once via device login>'
