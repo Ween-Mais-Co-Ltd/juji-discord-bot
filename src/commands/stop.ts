@@ -18,7 +18,7 @@ export default class Stop extends Command {
       return
     }
 
-    const stopped = musicManager.stop(interaction.guildId)
+    const stopped = await musicManager.stop(interaction.guildId)
     await interaction.reply({
       content: stopped
         ? '⏹️ Stopped playback and cleared the queue.'

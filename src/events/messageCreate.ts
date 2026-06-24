@@ -109,12 +109,12 @@ export default class MessageCreate extends Event<typeof Events.MessageCreate> {
   }
 
   private async handleStop(message: Message<true>, result: AssistantResult): Promise<void> {
-    const stopped = musicService.stop(message.guildId)
+    const stopped = await musicService.stop(message.guildId)
     await this.reply(message, stopped ? result.reply : 'Nothing is playing right now.')
   }
 
   private async handleSkip(message: Message<true>, result: AssistantResult): Promise<void> {
-    const outcome = musicService.skip(message.guildId)
+    const outcome = await musicService.skip(message.guildId)
     await this.reply(message, outcome ? result.reply : 'Nothing is playing right now.')
   }
 

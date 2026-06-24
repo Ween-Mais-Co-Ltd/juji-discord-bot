@@ -16,7 +16,7 @@ export default class Skip extends Command {
       return
     }
 
-    const result = musicService.skip(interaction.guildId)
+    const result = await musicService.skip(interaction.guildId)
     if (!result) {
       await interaction.reply({
         content: 'Nothing is playing right now.',
