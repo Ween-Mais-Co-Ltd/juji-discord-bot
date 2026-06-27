@@ -1,3 +1,11 @@
+# [1.11.0](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.10.0...v1.11.0) (2026-06-27)
+
+
+### Features
+
+* **api:** record and broadcast play history over the music socket ([ee6b6c2](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/commit/ee6b6c2b7d4a44030e0678978b6828405a5bb538))
+* **history:** add Redis-backed per-guild recently-played store ([e2d28fc](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/commit/e2d28fc0a1c57bbcadc18d004387fbf539e51e5c))
+
 # [1.10.0](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.9.0...v1.10.0) (2026-06-27)
 
 
