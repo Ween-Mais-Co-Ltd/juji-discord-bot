@@ -1,3 +1,11 @@
+# [1.10.0](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.9.0...v1.10.0) (2026-06-27)
+
+
+### Features
+
+* **api:** summon bot into requester's voice channel when idle ([119b2e8](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/commit/119b2e8bda12bf654b9f6b4e1ce0fd2aa3a6fbd2))
+* **music:** resolve a member's current voice channel ([7022ff3](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/commit/7022ff37672b842189a68768851115cb33961272))
+
 # [1.9.0](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.8.1...v1.9.0) (2026-06-26)
 
 
