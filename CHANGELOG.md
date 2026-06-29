@@ -1,3 +1,10 @@
+## [1.12.1](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.12.0...v1.12.1) (2026-06-29)
+
+
+### Bug Fixes
+
+* **deploy:** mount postgres volume at /var/lib/postgresql for v18 layout ([5450292](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/commit/5450292398a9a8e647234f9731825a4349f2510c))
+
 # [1.12.0](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.11.1...v1.12.0) (2026-06-29)
 
 
