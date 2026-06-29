@@ -1,3 +1,12 @@
+# [1.12.0](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.11.1...v1.12.0) (2026-06-29)
+
+
+### Features
+
+* **database:** add Postgres + Drizzle ORM analytics layer ([5a262d8](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/commit/5a262d8eb4526fcbd83e17e1cab7ee1990ca893a))
+* **music:** record play and listen events on playback lifecycle ([a34c73d](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/commit/a34c73d315e40acfc2cf62d5c13f73c466b9a9cd))
+* **music:** track per-user listening time via voice state ([36a2627](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/commit/36a26275e1203744ff5c928f7366c696eee0114f))
+
 ## [1.11.1](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.11.0...v1.11.1) (2026-06-29)
 
 
