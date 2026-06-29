@@ -147,7 +147,11 @@ export function initMusicEvents(): void {
     broadcastState(player.guildId)
   })
   lavalink.on('queueEnd', (player) => broadcastState(player.guildId))
-  lavalink.on('playerDestroy', (player) => broadcastState(player.guildId))
+  lavalink.on('playerDestroy', (player) => {
+    const listeners = voiceListenerTracker.endTrack(player.guildId)
+    analyticsRecorder.recordEnd(player.guildId, 'stopped', listeners)
+    broadcastState(player.guildId)
+  })
 }
 
 export { websocket }
