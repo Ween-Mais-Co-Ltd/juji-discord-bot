@@ -23,12 +23,13 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-juji}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-juji}
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER:-juji} -d juji']
       interval: 5s
       timeout: 5s
       retries: 5
+      start_period: 30s
     networks:
       - juji-network
 
