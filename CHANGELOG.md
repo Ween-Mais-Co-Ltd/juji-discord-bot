@@ -1,3 +1,10 @@
+## [1.12.2](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.12.1...v1.12.2) (2026-06-29)
+
+
+### Bug Fixes
+
+* **database:** add postgres driver for drizzle-kit migrations ([f74c8f9](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/commit/f74c8f9ec621453f0e8bd9185539e3f558cd72dc))
+
 ## [1.12.1](https://github.com/Ween-Mais-Co-Ltd/juji-discord-bot/compare/v1.12.0...v1.12.1) (2026-06-29)
 
 
