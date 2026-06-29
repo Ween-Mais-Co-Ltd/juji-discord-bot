@@ -57,9 +57,11 @@ export function toTrack(track: LavalinkTrack | UnresolvedTrack): Track {
   return {
     id: info.identifier ?? '',
     title: info.title,
+    author: info.author ?? '',
     url: info.uri ?? '',
     thumbnail: info.artworkUrl ?? undefined,
     durationSec: Math.round((info.duration ?? 0) / 1000),
+    sourceName: info.sourceName ?? '',
     isLive: info.isStream ?? false,
     requestedBy: requesterName(track.requester),
   }

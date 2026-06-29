@@ -4,6 +4,8 @@
   "module": "index.ts",
   "dependencies": {
     "discord.js": "^14.26.4",
+    "drizzle-kit": "^0.31.10",
+    "drizzle-orm": "^0.45.2",
     "hono": "^4.12.27",
     "lavalink-client": "^2.10.3"
   },
