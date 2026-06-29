@@ -41,7 +41,11 @@ export default class Play extends Command {
     await interaction.deferReply()
 
     const result = await musicService.playFromQuery(voiceChannel, query, {
-      requester: { username: interaction.member.displayName },
+      requester: {
+        username: interaction.member.displayName,
+        discordUserId: interaction.user.id,
+        requestSource: 'slash',
+      },
       onResolved: async (resolved) => {
         await interaction.editReply({ content: `⏳ Preparing **${resolved.title}**…` })
       },

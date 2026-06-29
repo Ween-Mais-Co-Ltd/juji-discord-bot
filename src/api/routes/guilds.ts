@@ -83,7 +83,7 @@ export const guilds = new Hono()
       const result = await musicService.addOrSummon(
         guildId,
         url.trim(),
-        { username },
+        { username, discordUserId, requestSource: 'api' },
         discordUserId,
       )
       if (!result.ok) {

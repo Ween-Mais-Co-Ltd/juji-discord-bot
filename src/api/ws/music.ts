@@ -1,10 +1,13 @@
 import { createBunWebSocket } from 'hono/bun'
 import { HTTPException } from 'hono/http-exception'
 import type { WSContext } from 'hono/ws'
+import { analyticsRecorder } from '../../database'
 import { musicHistory } from '../../music/history'
 import { lavalink, toTrack } from '../../music/lavalink'
 import { musicManager } from '../../music/MusicManager'
+import type { Requester } from '../../music/MusicService'
 import { type QueueItemDto, toQueueItem } from '../../music/snapshot'
+import { voiceListenerTracker } from '../../music/VoiceListenerTracker'
 import { verifySupabaseJwt } from '../middleware/auth'
 
 const { upgradeWebSocket, websocket } = createBunWebSocket()
@@ -119,16 +122,30 @@ export const upgradeMusicWs = upgradeWebSocket(async (c) => {
 export function initMusicEvents(): void {
   lavalink.on('trackStart', (player, track) => {
     if (track) {
+      const mapped = toTrack(track)
       void musicHistory
-        .record(player.guildId, toQueueItem(toTrack(track)))
+        .record(player.guildId, toQueueItem(mapped))
         .then(() => broadcastHistory(player.guildId))
         .catch((error: unknown) => {
           console.error('[history] failed to record/broadcast track:', error)
         })
+
+      const requester = track.requester as Partial<Requester> | undefined
+      analyticsRecorder.recordPlay(player.guildId, player.voiceChannelId ?? null, mapped, {
+        discordUserId: requester?.discordUserId,
+        displayName: requester?.username ?? 'unknown',
+        query: requester?.query,
+        requestSource: requester?.requestSource ?? 'auto-dj',
+      })
+      voiceListenerTracker.onTrackStart(player.guildId, player.voiceChannelId ?? null)
     }
     broadcastState(player.guildId)
   })
-  lavalink.on('trackEnd', (player) => broadcastState(player.guildId))
+  lavalink.on('trackEnd', (player, _track, payload) => {
+    const listeners = voiceListenerTracker.endTrack(player.guildId)
+    analyticsRecorder.recordEnd(player.guildId, payload.reason, listeners)
+    broadcastState(player.guildId)
+  })
   lavalink.on('queueEnd', (player) => broadcastState(player.guildId))
   lavalink.on('playerDestroy', (player) => broadcastState(player.guildId))
 }

@@ -2,10 +2,15 @@ import type { VoiceBasedChannel } from 'discord.js'
 import type { Player } from 'lavalink-client'
 import { MusicManager, musicManager } from './MusicManager'
 import { toTrack } from './lavalink'
+import type { RequestSource } from '../database/schema'
 import type { Track } from '../types/track'
 
 export interface Requester {
   username: string
+  discordUserId?: string
+  requestSource: RequestSource
+  /** Original search string; injected by `enqueue()` — call sites need not set it. */
+  query?: string
 }
 
 export type PlayResult =
@@ -20,7 +25,7 @@ interface PlayOptions {
 }
 
 export class MusicService {
-  constructor(private readonly manager: MusicManager) { }
+  constructor(private readonly manager: MusicManager) {}
 
   async playFromQuery(
     channel: VoiceBasedChannel,
@@ -51,7 +56,7 @@ export class MusicService {
     } catch {
       return { ok: false, reason: 'join-failed' }
     }
-    
+
     return this.enqueue(player, query, { requester }, true)
   }
 
@@ -61,7 +66,7 @@ export class MusicService {
     { requester, onResolved }: PlayOptions,
     leaveOnIdleLive: boolean,
   ): Promise<PlayResult> {
-    const result = await player.search({ query }, requester)
+    const result = await player.search({ query }, requester ? { ...requester, query } : requester)
     const first = result.tracks[0]
     if (result.loadType === 'error' || result.loadType === 'empty' || !first) {
       throw new Error(`No results found for: ${query}`)
